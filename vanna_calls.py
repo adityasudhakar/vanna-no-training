@@ -4,8 +4,19 @@ from vanna.remote import VannaDefault
 
 @st.cache_resource(ttl=3600)
 def setup_vanna():
-    vn = VannaDefault(api_key=st.secrets.get("VANNA_API_KEY"), model='chinook')
-    vn.connect_to_sqlite("https://vanna.ai/Chinook.sqlite")
+    vn = VannaDefault(
+        api_key=st.secrets["OPENAI_API_KEY"], 
+        model=st.secrets["OPENAI_MODEL"]
+    )
+    # Connect to your BigQuery dataset
+    vn.connect_to_bigquery(project_id=st.secrets["GCP_PROJECT_ID"])
+    
+    # Run the information schema query to help Vanna understand your data structure
+    schema_info = vn.run_sql(st.secrets["INFORMATION_SCHEMA_QUERY"])
+    
+    # If you need Vanna to train on the schema information
+    # vn.train(documentation=schema_info)
+    
     return vn
 
 @st.cache_data(show_spinner="Generating sample questions ...")
