@@ -15,7 +15,7 @@ def setup_vanna():
     schema_info = vn.run_sql(st.secrets["INFORMATION_SCHEMA_QUERY"])
     
     # If you need Vanna to train on the schema information
-    # vn.train(documentation=schema_info)
+    vn.train(documentation=schema_info)
     
     return vn
 
